@@ -9,7 +9,7 @@ interface IOControllerObject {
     httpServer: Server,
     options: Partial<SocketIO.ServerOptions>
   ) => SocketIO.Server;
-  getIO: () => SocketIO.Server | void;
+  getIO: () => SocketIO.Server;
 }
 
 const ioControllerObject: IOControllerObject = {
