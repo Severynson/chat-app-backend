@@ -46,7 +46,7 @@ export const sendMessage = async (
         ],
       },
         {
-          $set: {
+          $push: {
             "messages": req.body.message,
           },
         },
