@@ -12,7 +12,7 @@ export const getChat = async (
         { title: `${req.body.interlocutorId} & ${req.body.userId}` },
         { title: `${req.body.userId} & ${req.body.interlocutorId}` },
       ],
-    });
+    }).populate({ path: "messages.author", select: "name" });
     if (!chat) {
       const chat = Chat.create({
         title: `${req.body.interlocutorId} & ${req.body.userId}`,
@@ -37,7 +37,7 @@ export const sendMessage = async (
   next: NextFunction
 ) => {
   try {
-    console.log(`${req.body.interlocutorId} & ${req.body.userId}`)
+    console.log(`${req.body.interlocutorId} & ${req.body.userId}`);
     const chat = await Chat.findOneAndUpdate(
       {
         $or: [
@@ -45,16 +45,16 @@ export const sendMessage = async (
           { title: `${req.body.userId} & ${req.body.interlocutorId}` },
         ],
       },
-        {
-          $push: {
-            "messages": req.body.message,
-          },
+      {
+        $push: {
+          messages: req.body.message,
         },
+      }
     );
 
-    console.log(req.body.message)
+    console.log(req.body.message);
 
-    console.log('Chat  ===>  ', chat)
+    console.log("Chat  ===>  ", chat);
 
     res.status(201).json(chat);
   } catch (error: Error | any) {
@@ -64,11 +64,3 @@ export const sendMessage = async (
     next(error);
   }
 };
-
-// () => {
-//     ioControllerObject.getIO().emit("messages", {
-//       action: "create",
-//       message:
-//         "some message is here from the backend, but could be accepted trough the props",
-//     });
-//   }
