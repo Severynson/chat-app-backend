@@ -1,20 +1,47 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import SocketIO from "socket.io";
 import authRoutes from "./routes/auth";
 import chatRoutes from "./routes/chat";
+import userRoutes from "./routes/user";
 import ioControllerObject from "./socket";
+
+export interface Error extends globalThis.Error {
+  statusCode?: number;
+  data?: Object[];
+}
 
 const app = express();
 
 const MONGODB_URI =
   "mongodb+srv://user1:user1@nodejs-course-cluster.mkrye9p.mongodb.net/chat-app?retryWrites=true&w=majority";
 
+app.use(bodyParser.json()); // application/json
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 app.use("/auth", authRoutes);
 app.use("/chat", chatRoutes);
+app.use("/user", userRoutes);
 
 app.get("/", (req, res, next) => {
   res.status(200).json({ message: "Welcome!" });
+});
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
 });
 
 mongoose

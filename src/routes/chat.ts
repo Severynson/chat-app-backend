@@ -1,14 +1,10 @@
 import { Router } from "express";
-import ioControllerObject from "../socket";
+import * as chatController from "../controllers/chat";
 
 const router = Router();
 
-router.get("/", () => {
-  ioControllerObject.getIO().emit("messages", {
-    action: "create",
-    message:
-      "some message is here from the backend, but could be accepted trough the props",
-  });
-});
+router.post("/", chatController.getChat);
+
+router.post("/send-message", chatController.sendMessage);
 
 export default router;
