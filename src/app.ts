@@ -37,6 +37,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
+  console.log('Error res sended')
   res.status(status).json({ message: message, data: data });
 });
 
