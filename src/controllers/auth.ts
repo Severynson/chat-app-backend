@@ -46,43 +46,51 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error: Error = new Error("Validation failed.");
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
-  }
+  try {
+    console.log(req.body.email, " trying to log in!");
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error: Error = new Error("Validation failed.");
+      error.statusCode = 422;
+      error.data = errors.array();
+      throw error;
+    }
 
-  const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
 
-  if (!user) {
-    const error: Error = new Error(
-      "Some error hapened while connecting to the database!"
-    );
-    error.statusCode = 401;
-    throw error;
-  } else {
-    const passwordIsCorrect = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
-
-    if (!passwordIsCorrect) {
-      const error: Error = new Error("Password is incorrect!");
+    if (!user) {
+      const error: Error = new Error(
+        "Some error hapened while connecting to the database!"
+      );
       error.statusCode = 401;
       throw error;
     } else {
-      const token = jwt.sign(
-        {
-          email: user.email,
-          userId: user._id.toString(),
-        },
-        "somesecret1",
-        { expiresIn: "1h" }
+      const passwordIsCorrect = await bcrypt.compare(
+        req.body.password,
+        user.password
       );
 
-      res.status(201).json({ token, userId: user._id.toString() });
+      if (!passwordIsCorrect) {
+        const error: Error = new Error("Password is incorrect!");
+        error.statusCode = 401;
+        throw error;
+      } else {
+        const token = jwt.sign(
+          {
+            email: user.email,
+            userId: user._id.toString(),
+          },
+          "somesecret1",
+          { expiresIn: "1h" }
+        );
+
+        res.status(201).json({ token, userId: user._id.toString() });
+      }
     }
+  } catch (error: Error | any) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };

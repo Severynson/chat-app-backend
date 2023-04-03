@@ -32,12 +32,8 @@ app.use("/auth", authRoutes);
 app.use("/chat", chatRoutes);
 app.use("/user", userRoutes);
 
-app.get("/", (req, res, next) => {
-  res.status(200).json({ message: "Welcome!" });
-});
-
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log(error);
+  console.error(error);
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
