@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import errorInitializer from "../helpers/errorInitializer";
 import { AuthenticatedRequest } from "../middleware/is-auth";
 import Chat from "../models/chat";
 import User from "../models/user";
@@ -31,10 +32,7 @@ export const getChat = async (
       res.status(201).json(chat);
     }
   } catch (error: Error | any) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    next(errorInitializer(error));
   }
 };
 
@@ -74,9 +72,6 @@ export const sendMessage = async (
 
     res.status(201).json(chat);
   } catch (error: Error | any) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    next(errorInitializer(error));
   }
 };
