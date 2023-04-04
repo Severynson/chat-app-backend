@@ -7,8 +7,8 @@ import {
 
 const router = Router();
 
-router.post("/login", loginValidation(), authController.login);
+router.post("/login", loginValidation, authController.login);
 
-router.put("/signup", signupValidation(), authController.signup);
+router.put("/signup", signupValidation, authController.signup);
 
 export default router;

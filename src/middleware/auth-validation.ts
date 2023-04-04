@@ -2,7 +2,7 @@ import { body } from "express-validator/check";
 import User from "../models/user";
 
 
-export const loginValidation = () => [
+export const loginValidation = [
   body("email").trim().isEmail().withMessage("Please enter a valid email."),
   body("password")
     .trim()
@@ -10,7 +10,7 @@ export const loginValidation = () => [
     .withMessage("Password is too short!"),
 ];
 
-export const signupValidation = () => [
+export const signupValidation = [
   body("email")
     .trim()
     .isEmail()

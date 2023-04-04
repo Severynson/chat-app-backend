@@ -1,6 +1,6 @@
 import { body } from "express-validator/check";
 
-export const messageValidation = () => [
+export const messageValidation = [
   body("text")
     .isString()
     .trim()

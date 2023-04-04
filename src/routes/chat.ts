@@ -10,7 +10,7 @@ router.post("/", isAuth, chatController.getChat);
 router.post(
   "/send-message",
   isAuth,
-  messageValidation(),
+  messageValidation,
   chatController.sendMessage
 );
 
