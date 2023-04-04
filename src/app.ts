@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth";
 import chatRoutes from "./routes/chat";
 import userRoutes from "./routes/user";
 import ioControllerObject from "./socket";
+import dotenv from "dotenv";
+const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export interface Error extends globalThis.Error {
   statusCode?: number;
@@ -37,14 +39,14 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
-  console.log('Error res sended')
+  console.log("Error res sended");
   res.status(status).json({ message: message, data: data });
 });
 
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    const server = app.listen(8080);
+    const server = app.listen(ENV_VARIABLES!.PORT || 8080);
     // new SocketIO.Server
     const io: SocketIO.Server = ioControllerObject.init(server, {
       cors: { origin: "*", methods: ["GET", "POST", "PUT", "DELETE", "PATCH"] },

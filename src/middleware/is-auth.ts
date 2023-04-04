@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Response, Request } from "express";
 import { Error } from "../app";
+import dotenv from 'dotenv';
+const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -25,7 +27,7 @@ export const isAuth = async (
   let decodedToken: ExtendedJwtType;
 
   try {
-    decodedToken = jwt.verify(token, "somesecret1", {
+    decodedToken = jwt.verify(token, ENV_VARIABLES!.SECRET, {
       ignoreExpiration: true,
     }) as ExtendedJwtType;
   } catch (error: Error | any) {

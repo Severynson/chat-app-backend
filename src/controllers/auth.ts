@@ -4,6 +4,8 @@ import { validationResult } from "express-validator/check";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Error } from "../app";
+import dotenv from "dotenv";
+const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export const login = async (
   req: Request,
@@ -43,7 +45,7 @@ export const login = async (
             email: user.email,
             userId: user._id.toString(),
           },
-          "somesecret1",
+          ENV_VARIABLES!.SECRET,
           { expiresIn: "1h" }
         );
 
@@ -59,42 +61,42 @@ export const login = async (
 };
 
 export const signup = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { email, name, password } = req.body;
-    const errors = validationResult(req);
-    try {
-      if (!errors.isEmpty()) {
-        const error: Error = new Error(
-          "Validation failed. " + errors.array()[0].msg
-        );
-        error.statusCode = 422;
-        error.data = errors.array();
-        throw error;
-      }
-  
-      const hashedPw: string = await bcrypt.hash(password, 12);
-  
-      const user = new User({
-        email,
-        password: hashedPw,
-        name,
-      });
-      const result = await user.save();
-  
-      if (!result) {
-        const error: Error = new Error("Error while creating a user!");
-        error.statusCode = 500;
-        throw error;
-      }
-  
-      res.status(201).json({ message: "User created!", userId: result._id });
-    } catch (err: Error | any) {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, name, password } = req.body;
+  const errors = validationResult(req);
+  try {
+    if (!errors.isEmpty()) {
+      const error: Error = new Error(
+        "Validation failed. " + errors.array()[0].msg
+      );
+      error.statusCode = 422;
+      error.data = errors.array();
+      throw error;
     }
-  };
+
+    const hashedPw: string = await bcrypt.hash(password, 12);
+
+    const user = new User({
+      email,
+      password: hashedPw,
+      name,
+    });
+    const result = await user.save();
+
+    if (!result) {
+      const error: Error = new Error("Error while creating a user!");
+      error.statusCode = 500;
+      throw error;
+    }
+
+    res.status(201).json({ message: "User created!", userId: result._id });
+  } catch (err: Error | any) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
