@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { Error } from "../app";
 import dotenv from "dotenv";
 import errorInitializer from "../helpers/errorInitializer";
+import tokenController from "../helpers/tokenController";
 const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export const login = async (
@@ -18,9 +19,9 @@ export const login = async (
     if (!errors.isEmpty())
       throw errorInitializer("Validation failed!", 422, errors.array());
 
-    const user = await User.findOne({ email: req.body.email });
+    const userDoc = await User.findOne({ email: req.body.email });
 
-    if (!user) {
+    if (!userDoc) {
       throw errorInitializer(
         "User do not exist or error while connecting to the DB!",
         500
@@ -28,22 +29,16 @@ export const login = async (
     } else {
       const passwordIsCorrect = await bcrypt.compare(
         req.body.password,
-        user.password
+        userDoc.password
       );
 
       if (!passwordIsCorrect) {
         throw errorInitializer("Password is incorrect!", 422);
       } else {
-        const token = jwt.sign(
-          {
-            email: user.email,
-            userId: user._id.toString(),
-          },
-          ENV_VARIABLES!.SECRET,
-          { expiresIn: "1h" }
-        );
+        const user = { userId: userDoc._id.toString() };
+        const token = tokenController.generateToken(user);
 
-        res.status(201).json({ token, userId: user._id.toString() });
+        res.status(201).json({ token });
       }
     }
   } catch (error: Error | any) {
@@ -68,12 +63,12 @@ export const signup = async (
 
     const hashedPw: string = await bcrypt.hash(password, 12);
 
-    const user = new User({
+    const userDoc = new User({
       email,
       password: hashedPw,
       name,
     });
-    const result = await user.save();
+    const result = await userDoc.save();
 
     if (!result) {
       const error: Error = new Error("Error while creating a user!");

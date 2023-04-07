@@ -5,6 +5,10 @@ import { isAuth } from "../middleware/is-auth";
 
 const router = Router();
 
-router.get("/all-users", isAuth, userController.getAllUsers);
+router.get(
+  "/all-available-chatmates",
+  isAuth,
+  userController.allAvailableChatmates
+);
 
 export default router;

@@ -1,13 +1,8 @@
-import jwt from "jsonwebtoken";
 import { NextFunction, Response, Request } from "express";
-import { Error } from "../app";
-import dotenv from 'dotenv';
-const { parsed: ENV_VARIABLES } = dotenv.config();
+import errorInitializer from "../helpers/errorInitializer";
+import tokenController from "../helpers/tokenController";
 
 export interface AuthenticatedRequest extends Request {
-  userId?: string;
-}
-interface ExtendedJwtType extends jwt.JwtPayload {
   userId?: string;
 }
 
@@ -16,31 +11,19 @@ export const isAuth = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.get("Authorization");
-  if (!authHeader) {
-    const error: Error = new Error("Not authenticated!");
-    error.statusCode = 401;
-    throw error;
-  }
-
-  const token: string = authHeader.split(" ")[1];
-  let decodedToken: ExtendedJwtType;
-
   try {
-    decodedToken = jwt.verify(token, ENV_VARIABLES!.SECRET, {
-      ignoreExpiration: true,
-    }) as ExtendedJwtType;
-  } catch (error: Error | any) {
-    error.statusCode = 500;
-    throw error;
-  }
+    const authHeader = req.get("Authorization");
+    if (!authHeader) throw errorInitializer("Not authenticated!", 401);
 
-  if (!decodedToken) {
-    const error: Error = new Error("Not authenticated!");
-    error.statusCode = 401;
-    throw error;
-  }
+    const token: string = authHeader.split(" ")[1];
 
-  req.userId = decodedToken.userId;
-  next();
+    const decodedToken = tokenController.verifyToken(token);
+
+    if (!decodedToken) throw errorInitializer("Not authenticated!", 401);
+
+    req.userId = decodedToken.userId;
+    next();
+  } catch (error) {
+    next(errorInitializer(error));
+  }
 };

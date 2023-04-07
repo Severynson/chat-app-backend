@@ -10,26 +10,30 @@ export const getChat = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId: myId } = req;
-  const { interlocutorId } = req.body;
+  // SHOUL BE A GET REQUEST WITH DINAMIC ROUTES AND USER ID SHOLD BE like chat-userid|interlocutor;
+  console.log("getc");
+  const { userId } = req;
+  const { chatmateId } = req.params;
+
+  console.log(userId, chatmateId);
 
   try {
     const chat = await Chat.findOne({
       $or: [
-        { title: `${interlocutorId} & ${myId}` },
-        { title: `${myId} & ${interlocutorId}` },
+        { title: `${chatmateId} & ${userId}` },
+        { title: `${userId} & ${chatmateId}` },
       ],
     }).populate({ path: "messages.author", select: "name" });
 
     if (!chat) {
       const chat = await Chat.create({
-        title: `${interlocutorId} & ${myId}`,
+        title: `${chatmateId} & ${userId}`,
         messages: [],
       });
 
-      (await chat.save()) && res.status(201).json(chat);
+      (await chat.save()) && res.status(201).json({ chat, userId });
     } else {
-      res.status(201).json(chat);
+      res.status(201).json({ chat, userId });
     }
   } catch (error: Error | any) {
     next(errorInitializer(error));
@@ -43,6 +47,8 @@ export const sendMessage = async (
 ) => {
   const { userId: myId } = req;
   const { interlocutorId, message } = req.body;
+
+  console.log(myId, interlocutorId);
 
   const filterForChatTitle = {
     $or: [
@@ -70,7 +76,7 @@ export const sendMessage = async (
         },
       });
 
-    res.status(201).json(chat);
+    res.status(201).json({ chat, myId });
   } catch (error: Error | any) {
     next(errorInitializer(error));
   }

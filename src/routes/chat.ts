@@ -5,7 +5,7 @@ import { isAuth } from "../middleware/is-auth";
 
 const router = Router();
 
-router.post("/", isAuth, chatController.getChat);
+router.get("/:chatmateId", isAuth, chatController.getChat);
 
 router.post(
   "/send-message",
