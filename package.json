@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/app.js",
-    "build": "tsc && node dist/app.js",
-    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\""
+    "build": "npm run tsc && node dist/app.js",
+    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run build\""
   },
   "author": "Severyn Kurach",
   "license": "ISC",
@@ -21,7 +21,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
     "nodemon": "^2.0.22",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "tsc": "^2.0.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
