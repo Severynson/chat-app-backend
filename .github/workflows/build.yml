@@ -1,4 +1,8 @@
 on: push
+env:
+  PORT: 8080
+  ACCESS_TOKEN_SECRET: somesecret1
+  REFRESH_TOKEN_SECRET: somesecret2
 jobs:
   build-node:
     runs-on: ubuntu-latest
