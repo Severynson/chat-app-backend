@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-const { parsed: ENV_VARIABLES } = dotenv.config();
 
 interface User {
   userId: string;
@@ -17,12 +15,15 @@ interface TokenController {
 
 const tokenController: TokenController = {
   generateToken: (user: User) => {
-    return jwt.sign(user, ENV_VARIABLES!.ACCESS_TOKEN_SECRET, {
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET as string, {
       expiresIn: "1h",
     });
   },
   verifyToken: (token) =>
-    jwt.verify(token, ENV_VARIABLES!.ACCESS_TOKEN_SECRET) as ExtendedJwtType,
+    jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET as string
+    ) as ExtendedJwtType,
 };
 
 export default tokenController;

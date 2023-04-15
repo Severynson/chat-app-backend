@@ -6,8 +6,6 @@ import authRoutes from "./routes/auth";
 import chatRoutes from "./routes/chat";
 import userRoutes from "./routes/user";
 import ioControllerObject from "./socket";
-import dotenv from "dotenv";
-const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export interface Error extends globalThis.Error {
   statusCode?: number;
@@ -31,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res, next) => {
-  res.send("Hi there!");
+  res.send("Hi there!" + " " + JSON.stringify(process.env));
   next();
 });
 app.use("/auth", authRoutes);
@@ -50,7 +48,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    const server = app.listen(ENV_VARIABLES!.PORT || 8080);
+    const server = app.listen(process.env.PORT || 8080);
     // new SocketIO.Server
     const io: SocketIO.Server = ioControllerObject.init(server, {
       cors: { origin: "*", methods: ["GET", "POST", "PUT", "DELETE", "PATCH"] },

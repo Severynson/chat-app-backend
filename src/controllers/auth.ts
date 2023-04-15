@@ -2,12 +2,9 @@ import { NextFunction, Response, Request } from "express";
 import User from "../models/user";
 import { validationResult } from "express-validator/check";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { Error } from "../app";
-import dotenv from "dotenv";
 import errorInitializer from "../helpers/errorInitializer";
 import tokenController from "../helpers/tokenController";
-const { parsed: ENV_VARIABLES } = dotenv.config();
 
 export const login = async (
   req: Request,

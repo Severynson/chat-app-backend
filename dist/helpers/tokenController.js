@@ -4,14 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const { parsed: ENV_VARIABLES } = dotenv_1.default.config();
 const tokenController = {
     generateToken: (user) => {
-        return jsonwebtoken_1.default.sign(user, ENV_VARIABLES.ACCESS_TOKEN_SECRET, {
+        return jsonwebtoken_1.default.sign(user, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: "1h",
         });
     },
-    verifyToken: (token) => jsonwebtoken_1.default.verify(token, ENV_VARIABLES.ACCESS_TOKEN_SECRET),
+    verifyToken: (token) => jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET),
 };
 exports.default = tokenController;

@@ -7,10 +7,8 @@ exports.signup = exports.login = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const check_1 = require("express-validator/check");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const errorInitializer_1 = __importDefault(require("../helpers/errorInitializer"));
 const tokenController_1 = __importDefault(require("../helpers/tokenController"));
-const { parsed: ENV_VARIABLES } = dotenv_1.default.config();
 const login = async (req, res, next) => {
     const errors = (0, check_1.validationResult)(req);
     try {
