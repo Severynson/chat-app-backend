@@ -30,6 +30,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res, next) => {
+  res.send("Hi there!");
+  next();
+});
 app.use("/auth", authRoutes);
 app.use("/chat", chatRoutes);
 app.use("/user", userRoutes);
