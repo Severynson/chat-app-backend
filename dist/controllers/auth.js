@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = exports.login = void 0;
 const user_1 = __importDefault(require("../models/user"));
-const check_1 = require("express-validator/check");
+const express_validator_1 = require("express-validator");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const errorInitializer_1 = __importDefault(require("../helpers/errorInitializer"));
 const tokenController_1 = __importDefault(require("../helpers/tokenController"));
 const login = async (req, res, next) => {
-    const errors = (0, check_1.validationResult)(req);
+    const errors = (0, express_validator_1.validationResult)(req);
     try {
         if (!errors.isEmpty())
             throw (0, errorInitializer_1.default)("Validation failed!", 422, errors.array());
@@ -37,7 +37,7 @@ const login = async (req, res, next) => {
 exports.login = login;
 const signup = async (req, res, next) => {
     const { email, name, password } = req.body;
-    const errors = (0, check_1.validationResult)(req);
+    const errors = (0, express_validator_1.validationResult)(req);
     try {
         if (!errors.isEmpty())
             throw (0, errorInitializer_1.default)("Validation failed. " + errors.array()[0].msg, 422, errors.array());

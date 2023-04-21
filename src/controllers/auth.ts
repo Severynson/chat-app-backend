@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import User from "../models/user";
-import { validationResult } from "express-validator/check";
+import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import { Error } from "../app";
 import errorInitializer from "../helpers/errorInitializer";

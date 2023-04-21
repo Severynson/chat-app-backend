@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 });
 app.get("/", (req, res, next) => {
     res.send("Hi there!" + " " + JSON.stringify(process.env));
+    console.log(';/////');
     next();
 });
 app.use("/auth", auth_1.default);

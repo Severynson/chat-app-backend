@@ -4,17 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signupValidation = exports.loginValidation = void 0;
-const check_1 = require("express-validator/check");
+const express_validator_1 = require("express-validator");
 const user_1 = __importDefault(require("../models/user"));
 exports.loginValidation = [
-    (0, check_1.body)("email").trim().isEmail().withMessage("Please enter a valid email."),
-    (0, check_1.body)("password")
+    (0, express_validator_1.body)("email").trim().isEmail().withMessage("Please enter a valid email."),
+    (0, express_validator_1.body)("password")
         .trim()
         .isLength({ min: 5 })
         .withMessage("Password is too short!"),
 ];
 exports.signupValidation = [
-    (0, check_1.body)("email")
+    (0, express_validator_1.body)("email")
         .trim()
         .isEmail()
         .withMessage("Please enter a valid email.")
@@ -25,9 +25,9 @@ exports.signupValidation = [
             }
         });
     }),
-    (0, check_1.body)("password")
+    (0, express_validator_1.body)("password")
         .trim()
         .isLength({ min: 5 })
         .withMessage("Password is too short!"),
-    (0, check_1.body)("name").trim().not().isEmpty().withMessage("Username can't be empty!"),
+    (0, express_validator_1.body)("name").trim().not().isEmpty().withMessage("Username can't be empty!"),
 ];
